@@ -1,0 +1,10 @@
+# Core Dependencies
+aiohttp>=3.9.0
+aiofiles>=23.2.1
+PyGithub>=2.1.1
+tqdm>=4.66.0
+
+# Optional: Testing Dependencies
+pytest>=7.4.3
+pytest-asyncio>=0.21.1
+pytest-cov>=4.1.0
