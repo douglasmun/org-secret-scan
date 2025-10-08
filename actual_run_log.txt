@@ -1,0 +1,197 @@
+
+douglasmun@Apollo19 ~ % pwd
+/Users/douglasmun
+douglasmun@Apollo19 ~ % cd Develop
+douglasmun@Apollo19 Develop % python3 -m venv org-secret-scan
+douglasmun@Apollo19 Develop % source org-secret-scan/bin/activate 
+((org-secret-scan) ) douglasmun@Apollo19 Develop % cd org-secret-scan
+((org-secret-scan) ) douglasmun@Apollo19 org-secret-scan % pwd
+/Users/douglasmun/Develop/org-secret-scan
+
+
+((org-secret-scan) ) douglasmun@Apollo19 org-secret-scan % python org_secret_scanner.py -h                                                  
+usage: org_secret_scanner.py [-h] [--local PATH] [--max-depth MAX_DEPTH] [--follow-symlinks] [--custom-patterns FILE] [--output-format {json,csv,sarif,all}]
+                             [--log-format {text,json}] [-v] [--version]
+
+Production-grade Git secret scanner for GitHub organizations and local filesystems
+
+options:
+  -h, --help            show this help message and exit
+  --local PATH          Scan local filesystem path instead of GitHub org
+  --max-depth MAX_DEPTH
+                        Maximum directory depth for local scans (default: 10)
+  --follow-symlinks     Follow symbolic links during local scanning
+  --custom-patterns FILE
+                        Path to custom regex patterns JSON file
+  --output-format {json,csv,sarif,all}
+                        Output format (default: json)
+  --log-format {text,json}
+                        Logging format (default: text)
+  -v, --verbose         Enable verbose debug logging
+  --version             show program's version number and exit
+
+ENVIRONMENT VARIABLES (For GitHub Org Scanning):
+  GITHUB_TOKEN          GitHub personal access token
+  TARGET_ORG            GitHub organization name to scan
+
+ENVIRONMENT VARIABLES (Optional):
+  MAX_CONCURRENT_REPOS  Number of repos to scan in parallel (default: 5)
+  MAX_CONCURRENT_FILES  Number of files to scan in parallel (default: 50)
+  CLONE_DEPTH           Git shallow clone depth (default: 1)
+  MAX_FILE_SIZE_MB      Skip files larger than this in MB (default: 10)
+  OUTPUT_FILE           Report output path (default: scan_report.json)
+  ENABLE_GIT_BLAME      Enable git blame analysis (default: false)
+  LOCAL_SCAN_MAX_DEPTH  Max directory depth for local scans (default: 10)
+
+USAGE EXAMPLES:
+  Scan GitHub organization:
+    export GITHUB_TOKEN="ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    export TARGET_ORG="myorganization"
+    python org_secret_scanner.py
+
+  Scan local filesystem:
+    python org_secret_scanner.py --local /path/to/projects
+    python org_secret_scanner.py --local ~ --max-depth 5
+    python org_secret_scanner.py --local . --output-format all
+
+SECURITY NOTICE:
+  This scanner NEVER attempts to use discovered credentials.
+  Report findings to your security team immediately.
+
+EXIT CODES:
+  0   Success
+  1   Error (missing config, API failure, etc.)
+  130 Interrupted by user (Ctrl+C)
+
+
+((org-secret-scan) ) douglasmun@Apollo19 org-secret-scan % python org_secret_scanner.py --local ~/Projects --max-depth 1 --output-format all
+2025-10-08 18:53:09 [INFO] ======================================================================
+2025-10-08 18:53:09 [INFO] LOCAL FILESYSTEM SECRET SCANNER
+2025-10-08 18:53:09 [INFO] ======================================================================
+2025-10-08 18:53:09 [INFO] Scan path: /Users/douglasmun/Projects
+2025-10-08 18:53:09 [INFO] Max depth: 1
+2025-10-08 18:53:09 [INFO] Follow symlinks: False
+2025-10-08 18:53:09 [INFO] Max file size: 10 MB
+2025-10-08 18:53:09 [INFO] Output format: all
+2025-10-08 18:53:09 [INFO] Platform: Darwin
+2025-10-08 18:53:09 [INFO] ======================================================================
+2025-10-08 18:53:09 [INFO] Starting local filesystem scan: /Users/douglasmun/Projects
+2025-10-08 18:53:09 [INFO] Platform: Darwin
+2025-10-08 18:53:09 [INFO] Max depth: 1, Follow symlinks: False
+2025-10-08 18:53:09 [INFO] Discovering files...
+2025-10-08 18:53:09 [INFO] Using platform-optimized scanning for Darwin
+2025-10-08 18:53:09 [INFO] Using macOS Spotlight for fast .git discovery...
+2025-10-08 18:53:10 [INFO] Found 0 .git directories
+2025-10-08 18:53:10 [INFO] Found 462 files to scan
+2025-10-08 18:53:10 [INFO] Scanning 462 files...
+Scanning files: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████| 462/462 [01:56<00:00,  3.97file/s]
+2025-10-08 18:55:06 [INFO] Local scan complete. Found 106140 potential secrets
+2025-10-08 18:55:10 [INFO] JSON report written to scan_report.json
+2025-10-08 18:55:10 [INFO] Summary: 21838 high-risk, 67977 medium-risk, 16325 low-risk
+2025-10-08 18:55:11 [INFO] CSV report written to scan_report.csv
+2025-10-08 18:55:16 [INFO] SARIF report written to scan_report.sarif
+2025-10-08 18:55:16 [INFO] Upload to GitHub: gh api repos/:owner/:repo/code-scanning/sarifs -F sarif=@scan_report.sarif
+2025-10-08 18:55:16 [INFO] ======================================================================
+2025-10-08 18:55:16 [INFO] LOCAL SCAN COMPLETED SUCCESSFULLY
+2025-10-08 18:55:16 [INFO] ======================================================================
+
+
+
+## Setup my Github Personal access tokens (classic)
+((org-secret-scan) ) douglasmun@Apollo19 org-secret-scan % export GITHUB_TOKEN="ghp_mygithubtoken" 
+
+## Setup my Github user is https://github.com/douglasmun    
+((org-secret-scan) ) douglasmun@Apollo19 org-secret-scan % export TARGET_ORG="douglasmun"
+
+
+((org-secret-scan) ) douglasmun@Apollo19 org-secret-scan % python org_secret_scanner.py --output-format all              
+2025-10-08 19:46:30 [INFO] ======================================================================
+2025-10-08 19:46:30 [INFO] PRODUCTION GIT SECRET SCANNER
+2025-10-08 19:46:30 [INFO] ======================================================================
+2025-10-08 19:46:30 [INFO] Organization: douglasmun
+2025-10-08 19:46:30 [INFO] Max concurrent repos: 5
+2025-10-08 19:46:30 [INFO] Clone depth: 1
+2025-10-08 19:46:30 [INFO] Output format: all
+2025-10-08 19:46:30 [INFO] Git blame enabled: False
+2025-10-08 19:46:30 [INFO] ======================================================================
+2025-10-08 19:46:30 [INFO] Starting scan of organization: douglasmun
+2025-10-08 19:46:30 [INFO] Scan mode: full
+2025-10-08 19:46:30 [INFO] Clone directory: /var/folders/gm/0qzvqcqs0vg5ktpgtzhnjl0r0000gn/T/orgscan_douglasmun_wylk4q93
+2025-10-08 19:46:30 [INFO] Custom patterns: 0
+2025-10-08 19:46:30 [INFO] Rate limit: 5000 requests/hour
+2025-10-08 19:46:30 [INFO] Attempting to access douglasmun as organization...
+2025-10-08 19:46:31 [INFO] Not an organization, trying douglasmun as user...
+2025-10-08 19:46:32 [INFO] ✓ Found 18 repositories for user douglasmun
+2025-10-08 19:46:32 [INFO] Active (non-archived) repositories: 18
+2025-10-08 19:46:32 [INFO] Cloning 18 repositories...
+Cloning repos:   0%|                                                                                                                                 | 0/18 [00:00<?, ?repo/s]2025-10-08 19:46:32 [INFO] Cloning douglasmun/Douglas-Guidebook (attempt 1/3)
+2025-10-08 19:46:32 [INFO] Cloning douglasmun/neon-snake-and-apple-game (attempt 1/3)
+2025-10-08 19:46:32 [INFO] Cloning douglasmun/100daysofmlcode (attempt 1/3)
+2025-10-08 19:46:32 [INFO] Cloning douglasmun/LGwebOSTVRC (attempt 1/3)
+2025-10-08 19:46:32 [INFO] Cloning douglasmun/neon-tetris-game (attempt 1/3)
+2025-10-08 19:46:33 [INFO] ✓ Successfully cloned douglasmun/neon-snake-and-apple-game
+2025-10-08 19:46:33 [INFO] Cloning douglasmun/decode-spam-headers (attempt 1/3)
+Cloning repos:   6%|██████▋                                                                                                                  | 1/18 [00:01<00:23,  1.39s/repo]2025-10-08 19:46:33 [INFO] ✓ Successfully cloned douglasmun/neon-tetris-game
+2025-10-08 19:46:33 [INFO] Cloning douglasmun/neon-rummikub-game (attempt 1/3)
+2025-10-08 19:46:34 [INFO] ✓ Successfully cloned douglasmun/LGwebOSTVRC
+2025-10-08 19:46:34 [INFO] Cloning douglasmun/phishing-rod (attempt 1/3)
+Cloning repos:  17%|████████████████████▏                                                                                                    | 3/18 [00:02<00:09,  1.52repo/s]2025-10-08 19:46:35 [INFO] ✓ Successfully cloned douglasmun/neon-rummikub-game
+2025-10-08 19:46:35 [INFO] Cloning douglasmun/Gemma3onRaspberryPi5 (attempt 1/3)
+Cloning repos:  22%|██████████████████████████▉                                                                                              | 4/18 [00:02<00:08,  1.58repo/s]2025-10-08 19:46:35 [INFO] ✓ Successfully cloned douglasmun/decode-spam-headers
+2025-10-08 19:46:35 [INFO] Cloning douglasmun/neon-submarine (attempt 1/3)
+Cloning repos:  28%|█████████████████████████████████▌                                                                                       | 5/18 [00:03<00:07,  1.80repo/s]2025-10-08 19:46:36 [INFO] ✓ Successfully cloned douglasmun/Douglas-Guidebook
+2025-10-08 19:46:36 [INFO] Cloning douglasmun/DataDiode-TFTP (attempt 1/3)
+Cloning repos:  33%|████████████████████████████████████████▎                                                                                | 6/18 [00:03<00:05,  2.05repo/s]2025-10-08 19:46:36 [INFO] ✓ Successfully cloned douglasmun/phishing-rod
+2025-10-08 19:46:36 [INFO] Cloning douglasmun/neon-chimpanzee-game (attempt 1/3)
+Cloning repos:  39%|███████████████████████████████████████████████                                                                          | 7/18 [00:04<00:05,  2.01repo/s]2025-10-08 19:46:37 [INFO] ✓ Successfully cloned douglasmun/neon-submarine
+2025-10-08 19:46:37 [INFO] Cloning douglasmun/OpenEDR (attempt 1/3)
+Cloning repos:  44%|█████████████████████████████████████████████████████▊                                                                   | 8/18 [00:04<00:05,  1.93repo/s]2025-10-08 19:46:37 [INFO] ✓ Successfully cloned douglasmun/Gemma3onRaspberryPi5
+2025-10-08 19:46:37 [INFO] Cloning douglasmun/douglasmun.github.io (attempt 1/3)
+Cloning repos:  50%|████████████████████████████████████████████████████████████▌                                                            | 9/18 [00:04<00:03,  2.38repo/s]2025-10-08 19:46:37 [INFO] ✓ Successfully cloned douglasmun/neon-chimpanzee-game
+2025-10-08 19:46:37 [INFO] Cloning douglasmun/neon-space-invaders-game (attempt 1/3)
+Cloning repos:  56%|██████████████████████████████████████████████████████████████████▋                                                     | 10/18 [00:05<00:03,  2.16repo/s]2025-10-08 19:46:38 [INFO] ✓ Successfully cloned douglasmun/douglasmun.github.io
+2025-10-08 19:46:38 [INFO] Cloning douglasmun/ChaoticPendulumPRNG (attempt 1/3)
+Cloning repos:  61%|█████████████████████████████████████████████████████████████████████████▎                                              | 11/18 [00:06<00:03,  1.88repo/s]2025-10-08 19:46:38 [INFO] ✓ Successfully cloned douglasmun/DataDiode-TFTP
+2025-10-08 19:46:38 [INFO] Cloning douglasmun/My1stPyLib (attempt 1/3)
+Cloning repos:  67%|████████████████████████████████████████████████████████████████████████████████                                        | 12/18 [00:06<00:02,  2.44repo/s]2025-10-08 19:46:39 [INFO] ✓ Successfully cloned douglasmun/neon-space-invaders-game
+2025-10-08 19:46:39 [INFO] Cloning douglasmun/NiniBananaBoatGame (attempt 1/3)
+Cloning repos:  72%|██████████████████████████████████████████████████████████████████████████████████████▋                                 | 13/18 [00:06<00:02,  1.98repo/s]2025-10-08 19:46:39 [INFO] ✓ Successfully cloned douglasmun/OpenEDR
+Cloning repos:  78%|█████████████████████████████████████████████████████████████████████████████████████████████▎                          | 14/18 [00:07<00:01,  2.53repo/s]2025-10-08 19:46:39 [INFO] ✓ Successfully cloned douglasmun/ChaoticPendulumPRNG
+Cloning repos:  83%|████████████████████████████████████████████████████████████████████████████████████████████████████                    | 15/18 [00:07<00:01,  2.65repo/s]2025-10-08 19:46:39 [INFO] ✓ Successfully cloned douglasmun/My1stPyLib
+2025-10-08 19:46:40 [INFO] ✓ Successfully cloned douglasmun/NiniBananaBoatGame
+Cloning repos:  94%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████▎      | 17/18 [00:08<00:00,  2.37repo/s]2025-10-08 19:46:43 [INFO] ✓ Successfully cloned douglasmun/100daysofmlcode
+Cloning repos: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 18/18 [00:10<00:00,  1.70repo/s]
+2025-10-08 19:46:43 [INFO] Successfully cloned 18/18 repositories
+2025-10-08 19:46:43 [INFO] Scanning 18 repositories for secrets...
+Scanning repos:   0%|                                                                                                                                | 0/18 [00:00<?, ?repo/s]2025-10-08 19:46:43 [INFO] Scanning 4 files in douglasmun/neon-space-invaders-game
+2025-10-08 19:46:43 [INFO] Scanning 8 files in douglasmun/Douglas-Guidebook
+2025-10-08 19:46:43 [INFO] Scanning 3 files in douglasmun/ChaoticPendulumPRNG
+2025-10-08 19:46:43 [INFO] Scanning 4 files in douglasmun/LGwebOSTVRC
+2025-10-08 19:46:43 [INFO] Scanning 12 files in douglasmun/neon-snake-and-apple-game
+2025-10-08 19:46:43 [INFO] Scanning 6 files in douglasmun/NiniBananaBoatGame
+2025-10-08 19:46:43 [INFO] Scanning 3 files in douglasmun/OpenEDR
+2025-10-08 19:46:43 [INFO] Scanning 3 files in douglasmun/decode-spam-headers
+2025-10-08 19:46:43 [INFO] Scanning 12 files in douglasmun/DataDiode-TFTP
+2025-10-08 19:46:43 [INFO] Scanning 2 files in douglasmun/Gemma3onRaspberryPi5
+2025-10-08 19:46:43 [INFO] Scanning 1 files in douglasmun/neon-rummikub-game
+2025-10-08 19:46:43 [INFO] Scanning 3 files in douglasmun/neon-tetris-game
+2025-10-08 19:46:43 [INFO] Scanning 6 files in douglasmun/douglasmun.github.io
+2025-10-08 19:46:43 [INFO] Scanning 3 files in douglasmun/neon-chimpanzee-game
+2025-10-08 19:46:43 [INFO] Scanning 83 files in douglasmun/neon-submarine
+2025-10-08 19:46:43 [INFO] Scanning 6028 files in douglasmun/phishing-rod
+2025-10-08 19:46:43 [INFO] Scanning 3 files in douglasmun/100daysofmlcode
+2025-10-08 19:46:43 [INFO] Scanning 4 files in douglasmun/My1stPyLib
+Scanning repos: 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 18/18 [00:12<00:00,  1.49repo/s]
+2025-10-08 19:46:55 [INFO] Scan complete. Found 18421 potential secrets
+2025-10-08 19:46:55 [INFO] Rate limiter stats: {'total_requests': 3, 'requests_remaining': 4998, 'total_waits': 1, 'reset_time': '2025-10-08T20:46:30.155485'}
+2025-10-08 19:46:55 [INFO] Cleaning up clone directory: /var/folders/gm/0qzvqcqs0vg5ktpgtzhnjl0r0000gn/T/orgscan_douglasmun_wylk4q93
+2025-10-08 19:46:56 [INFO] JSON report written to scan_report.json
+2025-10-08 19:46:56 [INFO] Summary: 1 high-risk, 9500 medium-risk, 8920 low-risk
+2025-10-08 19:46:56 [INFO] CSV report written to scan_report.csv
+2025-10-08 19:46:57 [INFO] SARIF report written to scan_report.sarif
+2025-10-08 19:46:57 [INFO] Upload to GitHub: gh api repos/:owner/:repo/code-scanning/sarifs -F sarif=@scan_report.sarif
+2025-10-08 19:46:57 [INFO] ======================================================================
+2025-10-08 19:46:57 [INFO] SCAN COMPLETED SUCCESSFULLY
+2025-10-08 19:46:57 [INFO] ======================================================================
+((org-secret-scan) ) douglasmun@Apollo19 org-secret-scan % deactivate
+douglasmun@Apollo19 org-secret-scan % 
