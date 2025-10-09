@@ -747,7 +747,7 @@ python -m json.tool custom_patterns.json
 ```
 
 **Problem:** `datetime.utcnow()` deprecation warning  
-**Solution:** Already fixed in v2.5.0 using `datetime.now(timezone.utc)`
+**Solution:** Already fixed in code using `datetime.now(timezone.utc)`
 
 **Problem:** Large files being skipped  
 **Solution:** Adjust the file size limit
