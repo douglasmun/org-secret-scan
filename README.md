@@ -1,8 +1,6 @@
 # Git Secret Scanner (GSS) aka. org-secret-scan
 Enterprise-grade secret detection for GitHub organizations and local filesystems
 
-**Version 1.0.0 - Initial Release** | Enterprise-grade secret detection for GitHub organizations and local filesystems
-
 Authored By: Douglas Mun with AI assistance.
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
